@@ -1697,6 +1697,7 @@ class FileBox(object):
 
     def on_add_shot_folders_clicked(self):
         file_dialog = QtWidgets.QFileDialog()
+        file_dialog.setDirectory(self.last_opened_shots_folder)
         file_dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
         file_dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
         file_view = file_dialog.findChild(QtWidgets.QListView, 'listView')
