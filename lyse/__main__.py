@@ -1704,10 +1704,10 @@ class FileBox(object):
 
         # to make it possible to select multiple directories:
         if file_view:
-            file_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+            file_view.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
         if f_tree_view:
-            f_tree_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+            f_tree_view.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
         if file_dialog.exec():
             folders = file_dialog.selectedFiles()
