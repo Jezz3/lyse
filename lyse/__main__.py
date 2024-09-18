@@ -1713,9 +1713,9 @@ class FileBox(object):
             folders = file_dialog.selectedFiles()
             shot_files = []
 
-        if not hasattr(self, 'shot_files'):
+        if "shot_files" not in locals():
             # User cancelled selection
-            return
+           return
 
         # Loop over each selected directory
         for folder in folders:
