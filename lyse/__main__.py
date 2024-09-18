@@ -1700,17 +1700,23 @@ class FileBox(object):
         file_dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
         file_dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
         file_view = file_dialog.findChild(QtWidgets.QListView, 'listView')
+        f_tree_view = file_dialog.findChild(QtWidgets.QTreeView)
 
         # to make it possible to select multiple directories:
         if file_view:
             file_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-        f_tree_view = file_dialog.findChild(QtWidgets.QTreeView)
+
         if f_tree_view:
             f_tree_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
         if file_dialog.exec():
             folders = file_dialog.selectedFiles()
             shot_files = []
+
+        if not hasattr(self, 'shot_files'):
+            # User cancelled selection
+            return
+
         # Loop over each selected directory
         for folder in folders:
             # Walk through the directory to find all .h5 files
@@ -1722,12 +1728,7 @@ class FileBox(object):
 
 
         print(f"files: {shot_files}")
-        if type(shot_files) is tuple:
-            shot_files, _ = shot_files
 
-        if not shot_files:
-            # User cancelled selection
-            return
         # Convert to standard platform specific path, otherwise Qt likes forward slashes:
         shot_files = [os.path.abspath(shot_file) for shot_file in shot_files]
 
