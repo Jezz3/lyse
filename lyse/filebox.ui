@@ -226,7 +226,7 @@ QGroupBox
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>:/qtutils/fugue/plus.png</normaloff>:/qtutils/fugue/plus.png</iconset>
+              <normaloff>:/qtutils/fugue/blue-folder-open.png</normaloff>:/qtutils/fugue/blue-folder-open.png</iconset>
             </property>
            </widget>
           </item>
