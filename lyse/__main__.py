@@ -1720,10 +1720,10 @@ class FileBox(object):
         # Loop over each selected directory
         for folder in folders:
             # Walk through the directory to find all .h5 files
-            for root, _, files in os.walk(folder):
+            for folderpath, _, files in os.walk(folder):
                 for file in files:
                     if file.endswith(".h5"):  # Check if the file has .h5 extension
-                        full_path = os.path.join(root, file)
+                        full_path = os.path.join(folderpath, file)
                         shot_files.append(full_path)
 
 
