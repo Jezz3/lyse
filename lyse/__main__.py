@@ -1680,6 +1680,7 @@ class FileBox(object):
         self.ui.pushButton_edit_columns.clicked.connect(self.on_edit_columns_clicked)
         self.shots_model.columns_changed.connect(self.on_columns_changed)
         self.ui.toolButton_add_shots.clicked.connect(self.on_add_shot_files_clicked)
+        self.ui.toolButton_add_folders.clicked.connect(self.on_add_shot_folders_clicked)
         self.ui.toolButton_remove_shots.clicked.connect(self.shots_model.on_remove_selection)
         self.ui.tableView.doubleLeftClicked.connect(self.shots_model.on_double_click)
         self.ui.pushButton_analysis_running.toggled.connect(self.on_analysis_running_toggled)
@@ -1693,6 +1694,48 @@ class FileBox(object):
         column_names = self.shots_model.column_names
         columns_visible = self.shots_model.columns_visible
         self.edit_columns_dialog.update_columns(column_names, columns_visible)
+
+    def on_add_shot_folders_clicked(self):
+        file_dialog = QtWidgets.QFileDialog()
+        file_dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
+        file_dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
+        file_view = file_dialog.findChild(QtWidgets.QListView, 'listView')
+
+        # to make it possible to select multiple directories:
+        if file_view:
+            file_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        f_tree_view = file_dialog.findChild(QtWidgets.QTreeView)
+        if f_tree_view:
+            f_tree_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+
+        if file_dialog.exec():
+            folders = file_dialog.selectedFiles()
+            shot_files = []
+        # Loop over each selected directory
+        for folder in folders:
+            # Walk through the directory to find all .h5 files
+            for root, _, files in os.walk(folder):
+                for file in files:
+                    if file.endswith(".h5"):  # Check if the file has .h5 extension
+                        full_path = os.path.join(root, file)
+                        shot_files.append(full_path)
+
+
+        print(f"files: {shot_files}")
+        if type(shot_files) is tuple:
+            shot_files, _ = shot_files
+
+        if not shot_files:
+            # User cancelled selection
+            return
+        # Convert to standard platform specific path, otherwise Qt likes forward slashes:
+        shot_files = [os.path.abspath(shot_file) for shot_file in shot_files]
+
+        # Save the containing folder for use next time we open the dialog box:
+        self.last_opened_shots_folder = os.path.dirname(shot_files[0])
+        # Queue the files to be opened:
+        for filepath in shot_files:
+            self.incoming_queue.put(filepath)
 
     def on_add_shot_files_clicked(self):
         shot_files = QtWidgets.QFileDialog.getOpenFileNames(self.ui,
