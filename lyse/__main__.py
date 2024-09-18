@@ -1697,13 +1697,15 @@ class FileBox(object):
 
     def on_add_shot_folders_clicked(self):
         file_dialog = QtWidgets.QFileDialog()
+        # Set inital folder to the last opened folder:
         file_dialog.setDirectory(self.last_opened_shots_folder)
+        # Only allow folder selection, for file selection use other button
         file_dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
+        # Use the Qt file dialong instead of windows one to allow multiple folder selection
         file_dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
         file_view = file_dialog.findChild(QtWidgets.QListView, 'listView')
         f_tree_view = file_dialog.findChild(QtWidgets.QTreeView)
 
-        # to make it possible to select multiple directories:
         if file_view:
             file_view.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
@@ -1726,9 +1728,6 @@ class FileBox(object):
                     if file.endswith(".h5"):  # Check if the file has .h5 extension
                         full_path = os.path.join(folderpath, file)
                         shot_files.append(full_path)
-
-
-        print(f"files: {shot_files}")
 
         # Convert to standard platform specific path, otherwise Qt likes forward slashes:
         shot_files = [os.path.abspath(shot_file) for shot_file in shot_files]
